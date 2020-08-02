@@ -1,0 +1,105 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Socket.IO chat</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <div id="wrap">
+      <header>
+        <b>Global Chat</b>
+        <p>Socket atual:</p>
+      </header>
+      <div id="users">
+        <b>Usuários Online</b>
+        <ul></ul>
+      </div>
+      <ul id="messages"></ul>
+      <form id="mBar" action="">
+        <label></label>
+        <button>Enviar</button>
+        <input id="m" autocomplete="off"/>
+        <button id="bLogout" onclick="logout()">X</button>
+      </form>
+    </div>
+    <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+    <script>
+
+      function getUser(){
+        var user = JSON.parse(window.sessionStorage.getItem('user'));
+  
+        if (!user) {
+          window.location = '/';
+        }
+        return user;
+      }
+
+      function printMessage(msg, user){
+        var messages = $('#messages')[0];
+        if (msg.nickname == user.nickname){
+          messages.innerHTML += '<li class="myMsgs"><b>'+msg.id+' </b>'+msg.nickname+'</li>';
+          messages.innerHTML += '<li class="myMsgs">'+msg.message+'</li>';
+        }else{
+          messages.innerHTML += '<li>'+msg.nickname+'<b> '+msg.id+'</b></li>';
+          messages.innerHTML += '<li>'+msg.message+'</li>';
+        }
+        messages.scrollTo(0, 3000);
+      }
+      
+      var user = getUser();
+      var socket = io();
+
+      socket.emit('signIn', {
+        user,
+        socketId: socket.id
+      });
+
+      $('#mBar label')[0].innerHTML = user.nickname;
+      
+      
+      $('#mBar').submit(function(){// ENVIA MENSAGEM!
+        if ($('#m').val() == '') {
+          return false;
+        }else{
+          socket.emit('chat', {
+            id: user.id,
+            nickname: user.nickname,
+            message: $('#m').val()
+          });
+          
+          $('#m').val('');
+          return false;
+        }
+      });
+      
+      socket.on('usersOn', (users) => {
+        var usersList = $('#users ul')[0];
+        usersList.innerHTML = '';
+
+        users.forEach(user => {
+          usersList.innerHTML += '<li>'+user.nickname+'</li>';
+          usersList.innerHTML += '<li class="userID">'+user.id+'</li>';
+          });
+          usersList.scrollTo(0, 3000);
+        });
+        
+        socket.on('chat', function(msg){// RECEBE MENSAGEM!
+          printMessage(msg, user);
+        });
+        
+        socket.on('loadChat', function(arr){// CARREGA MENSAGENS E ID DO SOCKET
+          $('header p')[0].innerHTML += ' '+arr[1];
+          arr[0].forEach(msg => {
+            printMessage(msg, user);
+        });
+      });
+
+      function logout(){
+        socket.emit('logout', user);
+        window.sessionStorage.clear();
+        window.location.href = '/';
+      }
+    </script>
+  </body>
+  </html>
