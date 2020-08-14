@@ -1,6 +1,7 @@
 <!doctype html>
 <html>
   <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Socket.IO chat</title>
     <link rel="stylesheet" href="style.css">
   </head>
@@ -14,7 +15,9 @@
         <b>Usuários Online</b>
         <ul></ul>
       </div>
-      <ul id="messages"></ul>
+      <div id="messages">
+        <ul></ul>
+      </div>
       <form id="mBar" action="">
         <label></label>
         <button>Enviar</button>
@@ -36,13 +39,13 @@
       }
 
       function printMessage(msg, user){
-        var messages = $('#messages')[0];
+        var messages = $('#messages ul')[0];
         if (msg.nickname == user.nickname){
           messages.innerHTML += '<li class="myMsgs"><b>'+msg.id+' </b>'+msg.nickname+'</li>';
-          messages.innerHTML += '<li class="myMsgs">'+msg.message+'</li>';
+          messages.innerHTML += '<li class="myMsgs"><p>'+msg.message+'</p></li>';
         }else{
           messages.innerHTML += '<li>'+msg.nickname+'<b> '+msg.id+'</b></li>';
-          messages.innerHTML += '<li>'+msg.message+'</li>';
+          messages.innerHTML += '<li><p>'+msg.message+'</p></li>';
         }
         messages.scrollTo(0, 3000);
       }

@@ -53,7 +53,6 @@
 }
 /* ---------------- CHAT ---------------- */
 #wrap header{
-  float: right;
   width: inherit;
   background-color: lightseagreen;
   box-shadow: 0.3rem 0.3rem 0.6rem rgba(11, 46, 44, 0.5);
@@ -102,33 +101,34 @@
   font-size: 0.6rem;
   margin: 0;
 }
-#messages{
-  list-style-type: none;
-  margin: 0;
-  width: 79%;
-  float: right;
-  text-align: left;
-  height: 88.8%;
+#messages ul{
+  height: 88.8vh;
   overflow-y: scroll;
+  list-style-type: none;
 }
-#messages li{
+#messages ul li{
+  list-style-type: none;
+  text-align: left;
   padding: 5px 10px;
   color: #eee;
 }
-#messages li:nth-child(odd) b{
+#messages ul li p{
+  word-break: break-word;
+}
+#messages ul li:nth-child(odd) b{
   font-size: 1rem;
   font-weight: normal;
   color: gray;
 }
-#messages li:nth-child(odd){
+#messages ul li:nth-child(odd){
   background-color: rgb(28, 28, 28);
   font-weight: bold;
 }
-#messages li:nth-child(even){
+#messages ul li:nth-child(even){
   background-color: rgb(37, 37, 37);
   font-style: italic;
 }
-#messages .myMsgs{
+#messages ul .myMsgs{
   text-align: right;
   color: lightseagreen;
 }
